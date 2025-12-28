@@ -48,7 +48,6 @@ target_link_libraries(
 	${PROJECT_NAME}
 	SDL3::SDL3
 	${OPENGL_LIBRARY}
-	json-c
 	cimgui
 )
 set_property(TARGET ${PROJECT_NAME} PROPERTY BUILD_RPATH ".")

@@ -28,6 +28,7 @@ DOOM*.pcx
 HTIC*.pcx
 HEXEN*.pcx
 STRIFE*.pcx
+*.wad.bak
 
 # CMake-specific ignores
 /.vs

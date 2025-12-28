@@ -773,7 +773,7 @@ P_CrossSpecialLinePtr
 	
       case 39:
 	// TELEPORT!
-	EV_Teleport( line, side, thing );
+	EV_Teleport( line, side, thing, false );
 	line->special = 0;
 	break;
 
@@ -882,7 +882,7 @@ P_CrossSpecialLinePtr
 	// TELEPORT MonsterONLY
 	if (!thing->player)
 	{
-	    EV_Teleport( line, side, thing );
+	    EV_Teleport( line, side, thing, false );
 	    line->special = 0;
 	}
 	break;
@@ -901,16 +901,7 @@ P_CrossSpecialLinePtr
 
       case 142:
 	// [sys] Run Action
-	if (line->flags & 0x400) {
-		action_run(
-			ACTTYPE_LINEDEF_WALK,
-			&line->action,
-			line,
-			NULL,
-			side,
-			thing
-		);
-	}
+	RUNACTION_LINE(ACTTYPE_LINEDEF_WALK, 0x400, side);
 	break;
 	
 	// RETRIGGERS.  All from here till end.
@@ -1033,7 +1024,7 @@ P_CrossSpecialLinePtr
 	
       case 97:
 	// TELEPORT!
-	EV_Teleport( line, side, thing );
+	EV_Teleport( line, side, thing, false );
 	break;
 	
       case 98:
@@ -1064,7 +1055,7 @@ P_CrossSpecialLinePtr
       case 126:
 	// TELEPORT MonsterONLY.
 	if (!thing->player)
-	    EV_Teleport( line, side, thing );
+	    EV_Teleport( line, side, thing, false );
 	break;
 	
       case 128:
@@ -1129,16 +1120,7 @@ P_ShootSpecialLine
 
       case 142:
 	// [sys] Run Action
-	if (line->flags & 0x1000) {
-		action_run(
-			ACTTYPE_LINEDEF_SHOOT,
-			&line->action,
-			line,
-			NULL,
-			-1,
-			thing
-		);
-	}
+	RUNACTION_LINE(ACTTYPE_LINEDEF_SHOOT, 0x1000, -1);
 	break;
     }
 }
@@ -1231,14 +1213,20 @@ void P_PlayerInSpecialSector (player_t* player)
 
       case 18:
 	// [sys] Run Action
-	action_run(
+	if (action_run(
 		ACTTYPE_SECTOR,
 		&sector->action,
 		NULL,
 		sector,
 		-1,
 		player->mo
-	);
+	)) {
+		fprintf(stderr, "Action: Failed to run\n");
+	}
+	
+	if (!sector->action.reuse) {
+		sector->special = 0;
+	}
 	break;
 			
       default:

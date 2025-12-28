@@ -99,6 +99,7 @@ typedef struct
 typedef struct {
 	char *name;
 	char *data;
+	char reuse;
 } action_t;
 
 //

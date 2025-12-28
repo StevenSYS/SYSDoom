@@ -26,6 +26,7 @@ static int addAct() {
 		MULTISTRUCT_RESIZE(action_t, actions, 1);
 		
 		actions.i[actions.count - 1].type = 0;
+		actions.i[actions.count - 1].reuse = 1;
 		actions.i[actions.count - 1].id = 0;
 		actions.i[actions.count - 1].inputId = 0;
 		
@@ -61,6 +62,12 @@ static int save() {
 			file,
 			&actions.i[i].type,
 			sizeof(unsigned char)
+		);
+		
+		SDL_WriteIO(
+			file,
+			&actions.i[i].reuse,
+			sizeof(char)
 		);
 		
 		SDL_WriteIO(
@@ -107,6 +114,12 @@ static int load() {
 		
 		SDL_ReadIO(
 			file,
+			&actions.i[i].reuse,
+			sizeof(char)
+		);
+		
+		SDL_ReadIO(
+			file,
 			&actions.i[i].id,
 			sizeof(unsigned short)
 		);
@@ -129,10 +142,15 @@ static int load() {
 	return 0;
 }
 
-static void drawAction(action_t *action) {
+static void renderAction(action_t *action) {
 	igCheckbox(
 		action->type ? LANG_ACTION_SECTOR : LANG_ACTION_LINEDEF,
 		(bool *)&action->type
+	);
+	
+	igCheckbox(
+		LANG_ACTION_REUSE,
+		(bool *)&action->reuse
 	);
 	
 	if (igInputInt(
@@ -181,7 +199,7 @@ void action_init() {
 void action_render() {
 	for (i = 0; i < actions.count; i++) {
 		igPushID_Int(i);
-		drawAction(&actions.i[i]);
+		renderAction(&actions.i[i]);
 		igSeparator();
 		igPopID();
 	}

@@ -92,11 +92,7 @@ static int spechit_max; // [crispy] remove SPECHIT limit
 // TELEPORT MOVE
 // 
 
-//
-// PIT_StompThing
-//
-boolean PIT_StompThing (mobj_t* thing)
-{
+static boolean StompThing(mobj_t* thing, boolean force) {
     fixed_t	blockdist;
 		
     if (!(thing->flags & MF_SHOOTABLE) )
@@ -116,12 +112,25 @@ boolean PIT_StompThing (mobj_t* thing)
 	return true;
     
     // monsters don't stomp things except on boss level
-    if ( !tmthing->player && gamemap != 30)
+    if ( !tmthing->player && gamemap != 30 && !force)
 	return false;	
 		
     P_DamageMobj (thing, tmthing, tmthing, 10000);
 	
     return true;
+}
+
+//
+// PIT_StompThing
+//
+boolean PIT_StompThing (mobj_t* thing)
+{
+	return StompThing(thing, false);
+}
+
+boolean PIT_StompThingForce (mobj_t* thing)
+{
+	return StompThing(thing, true);
 }
 
 
@@ -132,7 +141,8 @@ boolean
 P_TeleportMove
 ( mobj_t*	thing,
   fixed_t	x,
-  fixed_t	y )
+  fixed_t	y,
+  boolean	forceStomp )
 {
     int			xl;
     int			xh;
@@ -175,9 +185,15 @@ P_TeleportMove
     yh = (tmbbox[BOXTOP] - bmaporgy + MAXRADIUS)>>MAPBLOCKSHIFT;
 
     for (bx=xl ; bx<=xh ; bx++)
-	for (by=yl ; by<=yh ; by++)
-	    if (!P_BlockThingsIterator(bx,by,PIT_StompThing))
-		return false;
+	for (by=yl ; by<=yh ; by++) {
+	    if (forceStomp) {
+		if (!P_BlockThingsIterator(bx,by,PIT_StompThingForce))
+			return false;
+	    } else {
+		if (!P_BlockThingsIterator(bx,by,PIT_StompThing))
+			return false;
+	    }
+	}
     
     // the move is ok,
     // so link the thing into its new position
@@ -1669,4 +1685,3 @@ static void SpechitOverrun(line_t *ld)
             break;
     }
 }
-

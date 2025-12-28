@@ -398,6 +398,7 @@ void P_LoadSectors (int lump)
     // [sys]
     ss->action.name = NULL;
     ss->action.data = NULL;
+    ss->action.reuse = true;
 
     for (i=0 ; i<numsectors ; i++, ss++, ms++)
     {
@@ -584,6 +585,7 @@ void P_LoadLineDefs (int lump)
     // [sys]
     ld->action.name = NULL;
     ld->action.data = NULL;
+    ld->action.reuse = true;
 
     for (i=0 ; i<numlines ; i++, mld++, ld++)
     {
@@ -817,10 +819,16 @@ void P_LoadActions(int lump) {
 	for (i = 0; i < numActions; i++) {
 		if (actions[i].type) {
 			sectors[actions[i].id].action.name = actions[i].name;
-			sectors[actions[i].id].action.data = actions[i].data;
+			if (actions[i].data[0]) {
+				sectors[actions[i].id].action.data = actions[i].data;
+			}
+			sectors[actions[i].id].action.reuse = actions[i].reuse;
 		} else {
 			lines[actions[i].id].action.name = actions[i].name;
-			lines[actions[i].id].action.data = actions[i].data;
+			if (actions[i].data[0]) {
+				lines[actions[i].id].action.data = actions[i].data;
+			}
+			lines[actions[i].id].action.reuse = actions[i].reuse;
 		}
 	}
 	W_ReleaseLumpNum(lump);

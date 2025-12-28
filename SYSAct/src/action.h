@@ -12,6 +12,7 @@
 #define ACTION_SIZE \
 	( \
 		sizeof(unsigned char) + \
+		sizeof(char) + \
 		sizeof(unsigned short) + \
 		sizeof(char[ACTION_LENGTH_NAME]) + \
 		sizeof(char[ACTION_LENGTH_DATA]) \
@@ -20,6 +21,7 @@
 /* Structs */
 typedef struct {
 	unsigned char type;
+	char reuse;
 	unsigned short id;
 	char name[ACTION_LENGTH_NAME];
 	char data[ACTION_LENGTH_DATA];

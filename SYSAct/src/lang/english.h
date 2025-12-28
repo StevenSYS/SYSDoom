@@ -35,6 +35,7 @@
 /* Action */
 #define LANG_ACTION_SECTOR "Sector"
 #define LANG_ACTION_LINEDEF "Linedef"
+#define LANG_ACTION_REUSE "Reuse"
 #define LANG_ACTION_ID "Id"
 #define LANG_ACTION_NAME "Name"
 #define LANG_ACTION_DATA "Data"

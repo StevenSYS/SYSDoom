@@ -42,7 +42,8 @@ int
 EV_Teleport
 ( line_t*	line,
   int		side,
-  mobj_t*	thing )
+  mobj_t*	thing,
+  boolean forceStomp )
 {
     int		i;
     int		tag;
@@ -93,7 +94,7 @@ EV_Teleport
 		oldy = thing->y;
 		oldz = thing->z;
 				
-		if (!P_TeleportMove (thing, m->x, m->y))
+		if (!P_TeleportMove (thing, m->x, m->y, forceStomp))
 		    return 0;
 
                 // The first Final Doom executable does not set thing->z

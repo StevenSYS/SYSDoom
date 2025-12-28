@@ -40,7 +40,6 @@ static void regAct() {
 	ACTION_REGISTER(act_message);
 	ACTION_REGISTER(act_spawnThing);
 	ACTION_REGISTER(act_teleport);
-	ACTION_REGISTER(act_test);
 	return;
 }
 
@@ -68,6 +67,7 @@ int action_run(
 		action == NULL ||
 		action->name == NULL
 	) {
+		printf("%p\n", action->name);
 		return 1;
 	}
 	
@@ -75,6 +75,7 @@ int action_run(
 		if (strcmp(action->name, types.i[i].name) == 0) {
 			return types.i[i].run(
 				type,
+				action->reuse,
 				action->data,
 				line,
 				sector,
@@ -84,7 +85,7 @@ int action_run(
 		}
 	}
 	
-	fprintf(stderr, "action_run: Unknown action: %s\n", action->name);
+	fprintf(stderr, "Action: Unknown action: %s\n", action->name);
 	return 1;
 }
 

@@ -584,16 +584,7 @@ P_UseSpecialLine
 
       case 142:
 	// [sys] Run Action
-	if (line->flags & 0x800) {
-		action_run(
-			ACTTYPE_LINEDEF_USE,
-			&line->action,
-			line,
-			NULL,
-			side,
-			thing
-		);
-	}
+	RUNACTION_LINE(ACTTYPE_LINEDEF_USE, 0x800, side);
 	break;
 	
 	// BUTTONS

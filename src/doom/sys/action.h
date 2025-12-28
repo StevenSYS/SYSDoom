@@ -9,6 +9,7 @@
 #define ACTION_RUN \
 	static int run( \
 		const enum action_type type, \
+		const char reuse, \
 		const char *data, \
 		line_t *line, \
 		sector_t *sector, \
@@ -25,6 +26,24 @@
 		&run \
 	}
 
+#define RUNACTION_LINE(_type, _flag, _side) \
+	if (line->flags & _flag) { \
+		if (action_run( \
+			_type, \
+			&line->action, \
+			line, \
+			NULL, \
+			_side, \
+			thing \
+		)) { \
+			fprintf(stderr, "Action: Failed to run\n"); \
+		} \
+		\
+		if (!line->action.reuse) { \
+			line->special = 0; \
+		} \
+	}
+
 /* Enums */
 enum action_type {
 	/* Linedef */
@@ -39,6 +58,7 @@ enum action_type {
 /* Function Typedefs */
 typedef int (actRun)(
 	const enum action_type,
+	const char reuse,
 	const char *,
 	line_t *,
 	sector_t *,

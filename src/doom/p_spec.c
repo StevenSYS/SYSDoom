@@ -50,6 +50,8 @@
 // Data.
 #include "sounds.h"
 
+#include "action.h"
+
 #define HUSTR_SECRETFOUND	"A secret is revealed!"
 
 //
@@ -896,6 +898,20 @@ P_CrossSpecialLinePtr
 	EV_DoCeiling(line,silentCrushAndRaise);
 	line->special = 0;
 	break;
+
+      case 142:
+	// [sys] Run Action
+	if (line->flags & 0x400) {
+		action_run(
+			ACTTYPE_LINEDEF_WALK,
+			&line->action,
+			line,
+			NULL,
+			side,
+			thing
+		);
+	}
+	break;
 	
 	// RETRIGGERS.  All from here till end.
       case 72:
@@ -1110,6 +1126,20 @@ P_ShootSpecialLine
 	EV_DoPlat(line,raiseToNearestAndChange,0);
 	P_ChangeSwitchTexture(line,0);
 	break;
+
+      case 142:
+	// [sys] Run Action
+	if (line->flags & 0x1000) {
+		action_run(
+			ACTTYPE_LINEDEF_SHOOT,
+			&line->action,
+			line,
+			NULL,
+			-1,
+			thing
+		);
+	}
+	break;
     }
 }
 
@@ -1197,6 +1227,18 @@ void P_PlayerInSpecialSector (player_t* player)
 
 	if (player->health <= 10)
 	    G_ExitLevel();
+	break;
+
+      case 18:
+	// [sys] Run Action
+	action_run(
+		ACTTYPE_SECTOR,
+		&sector->action,
+		NULL,
+		sector,
+		-1,
+		player->mo
+	);
 	break;
 			
       default:

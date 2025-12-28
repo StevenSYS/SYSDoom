@@ -79,6 +79,8 @@
 
 #include "d_main.h"
 
+#include "action.h"
+
 #include "doom_icon.c"
 
 //
@@ -1659,6 +1661,9 @@ void D_DoomMain (void)
     // Save configuration at exit.
     I_AtExit(M_SaveDefaults, true); // [crispy] always save configuration at exit
 
+    // Uninit "action".
+    I_AtExit(action_uninit, true); // [sys] Uninit "action" at exit
+
     // Find main IWAD file and load it.
     iwadfile = D_FindIWAD(IWAD_MASK_DOOM, &gamemission);
 
@@ -2128,6 +2133,7 @@ void D_DoomMain (void)
     I_InitJoystick();
     I_InitSound(doom);
     I_InitMusic();
+    action_init(); /* [sys] */
 
     // [crispy] check for SSG resources
     crispy->havessg =
@@ -2447,4 +2453,3 @@ void D_DoomMain (void)
 
     D_DoomLoop ();  // never returns
 }
-

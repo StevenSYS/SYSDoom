@@ -27,7 +27,8 @@
 // Some global defines, that configure the game.
 #include "doomdef.h"
 
-
+#define ACTION_LENGTH_NAME 50
+#define ACTION_LENGTH_DATA 100
 
 //
 // Map level types.
@@ -49,7 +50,8 @@ enum
   ML_NODES,		// BSP nodes
   ML_SECTORS,		// Sectors, from editing
   ML_REJECT,		// LUT, sector-sector visibility	
-  ML_BLOCKMAP		// LUT, motion clipping, walls/grid element
+  ML_BLOCKMAP,		// LUT, motion clipping, walls/grid element
+  ML_ACTION,		// [sys] Action
 };
 
 
@@ -299,7 +301,12 @@ typedef PACKED_STRUCT (
     byte arg5;
 }) mapthing_hexen_t;
 
-
+typedef PACKED_STRUCT ({
+	unsigned char type;
+	unsigned short id;
+	char name[ACTION_LENGTH_NAME];
+	char data[ACTION_LENGTH_DATA];
+}) mapAction_t;
 
 
 #endif			// __DOOMDATA__

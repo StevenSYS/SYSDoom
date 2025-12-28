@@ -1,3 +1,9 @@
+file(
+	GLOB SYSDOOM_SOURCE_FILES
+	"sys/*.c"
+	"sys/actions/*.c"
+)
+
 add_library(doom STATIC
             am_map.c        am_map.h
             deh_ammo.c
@@ -79,9 +85,11 @@ add_library(doom STATIC
             st_lib.c        st_lib.h
             st_stuff.c      st_stuff.h
             v_snow.c        v_snow.h
-            wi_stuff.c      wi_stuff.h)
+            wi_stuff.c      wi_stuff.h
+            ${SYSDOOM_SOURCE_FILES}
+)
 
-target_include_directories(doom PRIVATE "../" "${CMAKE_CURRENT_BINARY_DIR}/../../")
+target_include_directories(doom PRIVATE "../" "${CMAKE_CURRENT_BINARY_DIR}/../../" "sys/" "./")
 
 if (DEFINED EMSCRIPTEN)
     set(SDL_FLAGS "-s USE_SDL=2")

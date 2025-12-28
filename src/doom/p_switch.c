@@ -38,6 +38,7 @@
 #include "doomstat.h"
 #include "r_state.h"
 
+#include "action.h"
 
 //
 // CHANGE THE TEXTURE OF A WALL SWITCH TO ITS OPPOSITE
@@ -580,6 +581,20 @@ P_UseSpecialLine
 	if (EV_DoFloor(line,raiseFloor512))
 	    P_ChangeSwitchTexture(line,0);
 	break;
+
+      case 142:
+	// [sys] Run Action
+	if (line->flags & 0x800) {
+		action_run(
+			ACTTYPE_LINEDEF_USE,
+			&line->action,
+			line,
+			NULL,
+			side,
+			thing
+		);
+	}
+	break;
 	
 	// BUTTONS
       case 42:
@@ -722,4 +737,3 @@ P_UseSpecialLine
 	
     return true;
 }
-

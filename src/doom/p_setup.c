@@ -394,6 +394,11 @@ void P_LoadSectors (int lump)
 
     ms = (mapsector_t *)data;
     ss = sectors;
+
+    // [sys]
+    ss->action.name = NULL;
+    ss->action.data = NULL;
+
     for (i=0 ; i<numsectors ; i++, ss++, ms++)
     {
 	ss->floorheight = SHORT(ms->floorheight)<<FRACBITS;
@@ -575,12 +580,17 @@ void P_LoadLineDefs (int lump)
     mld = (maplinedef_t *)data;
     ld = lines;
     warn = warn2 = 0; // [crispy] warn about invalid linedefs
+
+    // [sys]
+    ld->action.name = NULL;
+    ld->action.data = NULL;
+
     for (i=0 ; i<numlines ; i++, mld++, ld++)
     {
 	ld->flags = (unsigned short)SHORT(mld->flags); // [crispy] extended nodes
 	ld->special = SHORT(mld->special);
 	// [crispy] warn about unknown linedef types
-	if ((unsigned short) ld->special > 141 && ld->special != 271 && ld->special != 272)
+	if ((unsigned short) ld->special > 142 && ld->special != 271 && ld->special != 272)
 	{
 	    fprintf(stderr, "P_LoadLineDefs: Unknown special %d at line %d.\n", ld->special, i);
 	    warn++;
@@ -609,6 +619,7 @@ void P_LoadLineDefs (int lump)
 		case 51:	// s1 Secret exit
 		case 52:	// w1 Exit level
 		case 124:	// w1 Secret exit
+		case 142:	// [sys] Run Action
 		    break;
 		default:
 		    fprintf(stderr, "P_LoadLineDefs: Special linedef %d without tag.\n", i);
@@ -791,7 +802,30 @@ boolean P_LoadBlockMap (int lump)
     return true;
 }
 
-
+/* [sys] Load Actions */
+void P_LoadActions(int lump) {
+	int i;
+	int numActions;
+	byte *data;
+	mapAction_t *actions;
+	
+	numActions = W_LumpLength(lump) / sizeof(mapAction_t);
+	data = W_CacheLumpNum(lump, PU_STATIC);
+	
+	actions = (mapAction_t *)data;
+	
+	for (i = 0; i < numActions; i++) {
+		if (actions[i].type) {
+			sectors[actions[i].id].action.name = actions[i].name;
+			sectors[actions[i].id].action.data = actions[i].data;
+		} else {
+			lines[actions[i].id].action.name = actions[i].name;
+			lines[actions[i].id].action.data = actions[i].data;
+		}
+	}
+	W_ReleaseLumpNum(lump);
+	return;
+}
 
 //
 // P_GroupLines
@@ -1173,6 +1207,9 @@ P_SetupLevel
 	P_LoadLineDefs_Hexen (lumpnum+ML_LINEDEFS);
     else
     P_LoadLineDefs (lumpnum+ML_LINEDEFS);
+
+    P_LoadActions(lumpnum + ML_ACTION); // [sys] Load Actions
+
     // [crispy] (re-)create BLOCKMAP if necessary
     if (!crispy_validblockmap)
     {
@@ -1257,6 +1294,3 @@ void P_Init (void)
     P_InitPicAnims ();
     R_InitSprites (sprnames);
 }
-
-
-

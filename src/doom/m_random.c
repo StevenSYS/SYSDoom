@@ -43,27 +43,27 @@ static const unsigned char rndtable[256] = {
     120, 163, 236, 249
 };
 
-int	rndindex = 0;
-int	prndindex = 0;
-int	crndindex = 0;
+unsigned char rndindex = 0;
+unsigned char prndindex = 0;
+unsigned char crndindex = 0;
 
 // Which one is deterministic?
 int P_Random (void)
 {
-    prndindex = (prndindex+1)&0xff;
+    prndindex += 1;
     return rndtable[prndindex];
 }
 
 int M_Random (void)
 {
-    rndindex = (rndindex+1)&0xff;
+    rndindex += 1;
     return rndtable[rndindex];
 }
 
 // [crispy] our own private random function
 int Crispy_Random (void)
 {
-    crndindex = (crndindex+1)&0xff;
+    crndindex += 1;
     return rndtable[crndindex];
 }
 

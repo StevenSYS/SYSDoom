@@ -39,8 +39,6 @@
 #include "v_patch.h"
 
 
-
-
 // Silhouette, needed for clipping Segs (mainly)
 // and sprites representing things.
 #define SIL_NONE		0
@@ -96,6 +94,12 @@ typedef struct
     fixed_t		z;
 
 } degenmobj_t;
+
+// [sys] 
+typedef struct {
+	char *name;
+	char *data;
+} action_t;
 
 //
 // The SECTORS record, at runtime.
@@ -165,6 +169,9 @@ typedef	struct
 
     // [crispy] A11Y light level used for rendering
     short	rlightlevel;
+
+    // [sys] Vision Engine-like action
+    action_t action;
 } sector_t;
 
 
@@ -250,6 +257,9 @@ typedef struct line_s
 
     // [crispy] calculate sound origin of line to be its midpoint
     degenmobj_t	soundorg;
+
+    // [sys] Vision Engline-like action
+    action_t action;
 } line_t;
 
 

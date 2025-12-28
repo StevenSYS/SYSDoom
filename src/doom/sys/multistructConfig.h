@@ -2,4 +2,5 @@
 
 /* Macros */
 #define MULTISTRUCT_MALLOC malloc
+#define MULTISTRUCT_REALLOC realloc
 #define MULTISTRUCT_FREE free

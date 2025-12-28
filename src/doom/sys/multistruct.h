@@ -20,6 +20,17 @@
 		} \
 	}
 
+#define MULTISTRUCT_RESIZE(_type, _var, _ret) \
+	if (_var.count) { \
+		_var.i = (_type *)MULTISTRUCT_REALLOC( \
+			(void *)_var.i, \
+			sizeof(_type[_var.count]) \
+		); \
+		if (_var.i == NULL) { \
+			return _ret; \
+		} \
+	} \
+
 #define MULTISTRUCT_UNINIT(_var) \
 	if (_var.i != NULL) { \
 		MULTISTRUCT_FREE(_var.i); \

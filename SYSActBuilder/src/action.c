@@ -10,6 +10,63 @@
 #include "macros.h"
 #include "action.h"
 
+#define SAVELOAD(_func) \
+	for (i = 0; i < actions.count; i++) { \
+		/* Clear any unneeded data after the first NULL terminator from the name and data variables */ \
+		CLEAN(actions.i[i].name, ACTION_LENGTH_NAME); \
+		CLEAN(actions.i[i].data, ACTION_LENGTH_DATA); \
+		\
+		_func( \
+			file, \
+			&actions.i[i].type, \
+			sizeof(unsigned char) \
+		); \
+		\
+		_func( \
+			file, \
+			&actions.i[i].id, \
+			sizeof(unsigned short) \
+		); \
+		\
+		_func( \
+			file, \
+			&actions.i[i].name, \
+			sizeof(char[ACTION_LENGTH_NAME]) \
+		); \
+		\
+		_func( \
+			file, \
+			&actions.i[i].data, \
+			sizeof(char[ACTION_LENGTH_DATA]) \
+		); \
+		\
+		_func( \
+			file, \
+			&actions.i[i].tag, \
+			sizeof(short) \
+		); \
+		\
+		actions.i[i].inputId = (int)actions.i[i].id; \
+		actions.i[i].inputTag = (int)actions.i[i].tag; \
+	}
+
+#define CLEAN(_var, _len) \
+	active = 0; \
+	\
+	for (j = 0; j < _len; j++) { \
+		if ( \
+			active && \
+			_var[j] \
+		) { \
+			_var[j] = 0; \
+		} else if ( \
+			!active && \
+			!_var[j] \
+		) { \
+			active = 1; \
+		} \
+	}
+
 static unsigned int i;
 
 static SDL_IOStream *file;
@@ -26,9 +83,10 @@ static int addAct() {
 		MULTISTRUCT_RESIZE(action_t, actions, 1);
 		
 		actions.i[actions.count - 1].type = 0;
-		actions.i[actions.count - 1].reuse = 1;
 		actions.i[actions.count - 1].id = 0;
+		actions.i[actions.count - 1].tag = -1;
 		actions.i[actions.count - 1].inputId = 0;
+		actions.i[actions.count - 1].inputTag = -1;
 		
 		for (i = 0; i < ACTION_LENGTH_NAME; i++) {
 			actions.i[actions.count - 1].name[i] = 0;
@@ -51,48 +109,24 @@ static int removeAct() {
 }
 
 static int save() {
+	char active;
+	unsigned char j;
+	
 	file = SDL_IOFromFile(ACTION_FILE, "w");
 	
 	if (file == NULL) {
 		return 1;
 	}
 	
-	for (i = 0; i < actions.count; i++) {
-		SDL_WriteIO(
-			file,
-			&actions.i[i].type,
-			sizeof(unsigned char)
-		);
-		
-		SDL_WriteIO(
-			file,
-			&actions.i[i].reuse,
-			sizeof(char)
-		);
-		
-		SDL_WriteIO(
-			file,
-			&actions.i[i].id,
-			sizeof(unsigned short)
-		);
-		
-		SDL_WriteIO(
-			file,
-			&actions.i[i].name,
-			sizeof(char[ACTION_LENGTH_NAME])
-		);
-		
-		SDL_WriteIO(
-			file,
-			&actions.i[i].data,
-			sizeof(char[ACTION_LENGTH_DATA])
-		);
-	}
+	SAVELOAD(SDL_WriteIO);
 	SDL_CloseIO(file);
 	return 0;
 }
 
 static int load() {
+	char active;
+	unsigned char j;
+	
 	file = SDL_IOFromFile(ACTION_FILE, "r");
 	
 	if (
@@ -105,52 +139,15 @@ static int load() {
 	actions.count = SDL_GetIOSize(file) / ACTION_SIZE;
 	MULTISTRUCT_RESIZE(action_t, actions, 1);
 	
-	for (i = 0; i < actions.count; i++) {
-		SDL_ReadIO(
-			file,
-			&actions.i[i].type,
-			sizeof(unsigned char)
-		);
-		
-		SDL_ReadIO(
-			file,
-			&actions.i[i].reuse,
-			sizeof(char)
-		);
-		
-		SDL_ReadIO(
-			file,
-			&actions.i[i].id,
-			sizeof(unsigned short)
-		);
-		
-		SDL_ReadIO(
-			file,
-			&actions.i[i].name,
-			sizeof(char[ACTION_LENGTH_NAME])
-		);
-		
-		SDL_ReadIO(
-			file,
-			&actions.i[i].data,
-			sizeof(char[ACTION_LENGTH_DATA])
-		);
-		
-		actions.i[i].inputId = actions.i[i].id;
-	}
+	SAVELOAD(SDL_ReadIO);
 	SDL_CloseIO(file);
 	return 0;
 }
 
 static void renderAction(action_t *action) {
 	igCheckbox(
-		action->type ? LANG_ACTION_SECTOR : LANG_ACTION_LINEDEF,
+		LANG_ACTION_SECTOR,
 		(bool *)&action->type
-	);
-	
-	igCheckbox(
-		LANG_ACTION_REUSE,
-		(bool *)&action->reuse
 	);
 	
 	if (igInputInt(
@@ -167,6 +164,22 @@ static void renderAction(action_t *action) {
 		}
 		
 		action->id = (unsigned short)action->inputId;
+	}
+	
+	if (igInputInt(
+		LANG_ACTION_TAG,
+		&action->inputTag,
+		1,
+		2,
+		ImGuiInputTextFlags_None
+	)) {
+		if (action->inputTag > 0x7FFF) {
+			action->inputTag = 0x7FFF;
+		} else if (action->inputTag < -0x7FFF) {
+			action->inputTag = -0x7FFF;
+		}
+		
+		action->tag = (short)action->inputTag;
 	}
 	
 	igInputText(

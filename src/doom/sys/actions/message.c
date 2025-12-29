@@ -5,13 +5,24 @@
 
 ACTION_RUN {
 	if (
-		data != NULL &&
-		thing->type == MT_PLAYER
+		thing->type != MT_PLAYER &&
+		side == 1
 	) {
-		if (type == ACTTYPE_LINEDEF_USE) {
-			P_ChangeSwitchTexture(line, 1);
-		}
-		thing->player->message = data;
+		return 0;
+	}
+	
+	if (data == NULL) {
+		return 1;
+	}
+	
+	if (type == ACTTYPE_LINEDEF_USE) {
+		P_ChangeSwitchTexture(line, 1);
+	}
+	
+	thing->player->message = data;
+	
+	if (!reuse) {
+		line->special = 0;
 	}
 	return 0;
 }

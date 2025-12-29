@@ -1,0 +1,14 @@
+supported_games doom doom2
+
+# Line Specials
+linegroup y "SYSDoom"
+line 142 y "SYS: S/W1 Run action"
+line 143 y "SYS: S/WR Run action"
+
+# Sector Specials
+sector 18 "SYS: Run Action"
+
+# Line Flags
+lineflag "Action - Walk Over" 0x0400
+lineflag "Action - Use" 0x0800
+lineflag "Action - Shoot" 0x1000

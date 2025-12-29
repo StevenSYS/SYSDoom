@@ -46,6 +46,13 @@
 
 #include "p_extnodes.h" // [crispy] support extended node formats
 
+#define GET_ACTION(_var) \
+	_var[actions[i].id].action.name = actions[i].name; \
+	if (actions[i].data[0]) { \
+		_var[actions[i].id].action.data = actions[i].data; \
+	} \
+	_var[actions[i].id].action.tag = actions[i].tag;
+
 void	P_SpawnMapThing (mapthing_t*	mthing);
 
 
@@ -398,7 +405,7 @@ void P_LoadSectors (int lump)
     // [sys]
     ss->action.name = NULL;
     ss->action.data = NULL;
-    ss->action.reuse = true;
+    ss->action.tag = -1;
 
     for (i=0 ; i<numsectors ; i++, ss++, ms++)
     {
@@ -585,14 +592,14 @@ void P_LoadLineDefs (int lump)
     // [sys]
     ld->action.name = NULL;
     ld->action.data = NULL;
-    ld->action.reuse = true;
+    ld->action.tag = -1;
 
     for (i=0 ; i<numlines ; i++, mld++, ld++)
     {
 	ld->flags = (unsigned short)SHORT(mld->flags); // [crispy] extended nodes
 	ld->special = SHORT(mld->special);
 	// [crispy] warn about unknown linedef types
-	if ((unsigned short) ld->special > 142 && ld->special != 271 && ld->special != 272)
+	if ((unsigned short) ld->special > 143 && ld->special != 271 && ld->special != 272)
 	{
 	    fprintf(stderr, "P_LoadLineDefs: Unknown special %d at line %d.\n", ld->special, i);
 	    warn++;
@@ -621,7 +628,8 @@ void P_LoadLineDefs (int lump)
 		case 51:	// s1 Secret exit
 		case 52:	// w1 Exit level
 		case 124:	// w1 Secret exit
-		case 142:	// [sys] Run Action
+		case 142:	// [sys] s/w1 Run Action
+		case 143:	// [sys] s/wr Run Action
 		    break;
 		default:
 		    fprintf(stderr, "P_LoadLineDefs: Special linedef %d without tag.\n", i);
@@ -818,17 +826,9 @@ void P_LoadActions(int lump) {
 	
 	for (i = 0; i < numActions; i++) {
 		if (actions[i].type) {
-			sectors[actions[i].id].action.name = actions[i].name;
-			if (actions[i].data[0]) {
-				sectors[actions[i].id].action.data = actions[i].data;
-			}
-			sectors[actions[i].id].action.reuse = actions[i].reuse;
+			GET_ACTION(sectors);
 		} else {
-			lines[actions[i].id].action.name = actions[i].name;
-			if (actions[i].data[0]) {
-				lines[actions[i].id].action.data = actions[i].data;
-			}
-			lines[actions[i].id].action.reuse = actions[i].reuse;
+			GET_ACTION(lines);
 		}
 	}
 	W_ReleaseLumpNum(lump);

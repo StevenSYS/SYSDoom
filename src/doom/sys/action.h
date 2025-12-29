@@ -26,11 +26,16 @@
 		&run \
 	}
 
-#define RUNACTION_LINE(_type, _flag, _side) \
+#define ACTION_RUNLINE(_type, _flag, _side) \
 	if (line->flags & _flag) { \
+		if (line->action.tag > -1) { \
+			line->tag = line->action.tag; \
+		} \
+		\
 		if (action_run( \
 			_type, \
 			&line->action, \
+			line->special > 142, \
 			line, \
 			NULL, \
 			_side, \
@@ -39,8 +44,8 @@
 			fprintf(stderr, "Action: Failed to run\n"); \
 		} \
 		\
-		if (!line->action.reuse) { \
-			line->special = 0; \
+		if (line->action.tag > -1) { \
+			line->tag = oldTag; \
 		} \
 	}
 
@@ -80,6 +85,7 @@ int action_init();
 int action_run(
 	const enum action_type type,
 	const action_t *action,
+	const char reuse,
 	line_t *line,
 	sector_t *sector,
 	int side,

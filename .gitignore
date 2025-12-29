@@ -29,6 +29,7 @@ HTIC*.pcx
 HEXEN*.pcx
 STRIFE*.pcx
 *.wad.bak
+progInfo.h
 
 # CMake-specific ignores
 /.vs

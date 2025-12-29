@@ -350,6 +350,7 @@ P_UseSpecialLine
   line_t*	line,
   int		side )
 {               
+    short	oldTag = line->tag;
 
     // Err...
     // Use the back sides of VERY SPECIAL lines...
@@ -583,8 +584,9 @@ P_UseSpecialLine
 	break;
 
       case 142:
+      case 143:
 	// [sys] Run Action
-	RUNACTION_LINE(ACTTYPE_LINEDEF_USE, 0x800, side);
+	ACTION_RUNLINE(ACTTYPE_LINEDEF_USE, 0x800, side);
 	break;
 	
 	// BUTTONS

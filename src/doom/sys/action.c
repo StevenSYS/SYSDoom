@@ -56,6 +56,7 @@ int action_init() {
 int action_run(
 	const enum action_type type,
 	const action_t *action,
+	const char reuse,
 	line_t *line,
 	sector_t *sector,
 	int side,
@@ -75,7 +76,7 @@ int action_run(
 		if (strcmp(action->name, types.i[i].name) == 0) {
 			return types.i[i].run(
 				type,
-				action->reuse,
+				reuse,
 				action->data,
 				line,
 				sector,

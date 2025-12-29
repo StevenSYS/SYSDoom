@@ -642,6 +642,7 @@ EV_Teleport
 ( line_t*	line,
   int		side,
   mobj_t*	thing,
-  boolean	forceStomp );
+  boolean	forceStomp,
+  boolean	slient );
 
 #endif

@@ -303,10 +303,10 @@ typedef PACKED_STRUCT (
 
 typedef PACKED_STRUCT ({
 	unsigned char type;
-	char reuse;
 	unsigned short id;
 	char name[ACTION_LENGTH_NAME];
 	char data[ACTION_LENGTH_DATA];
+	short tag;
 }) mapAction_t;
 
 

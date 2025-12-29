@@ -599,6 +599,7 @@ P_CrossSpecialLinePtr
   mobj_t*	thing )
 {
 //  line_t*	line;
+    short	oldTag = line->tag;
     int		ok;
 
 //  line = &lines[linenum];
@@ -773,7 +774,7 @@ P_CrossSpecialLinePtr
 	
       case 39:
 	// TELEPORT!
-	EV_Teleport( line, side, thing, false );
+	EV_Teleport( line, side, thing, false, false );
 	line->special = 0;
 	break;
 
@@ -882,7 +883,7 @@ P_CrossSpecialLinePtr
 	// TELEPORT MonsterONLY
 	if (!thing->player)
 	{
-	    EV_Teleport( line, side, thing, false );
+	    EV_Teleport( line, side, thing, false, false );
 	    line->special = 0;
 	}
 	break;
@@ -900,8 +901,9 @@ P_CrossSpecialLinePtr
 	break;
 
       case 142:
+      case 143:
 	// [sys] Run Action
-	RUNACTION_LINE(ACTTYPE_LINEDEF_WALK, 0x400, side);
+	ACTION_RUNLINE(ACTTYPE_LINEDEF_WALK, 0x400, side);
 	break;
 	
 	// RETRIGGERS.  All from here till end.
@@ -1024,7 +1026,7 @@ P_CrossSpecialLinePtr
 	
       case 97:
 	// TELEPORT!
-	EV_Teleport( line, side, thing, false );
+	EV_Teleport( line, side, thing, false, false );
 	break;
 	
       case 98:
@@ -1055,7 +1057,7 @@ P_CrossSpecialLinePtr
       case 126:
 	// TELEPORT MonsterONLY.
 	if (!thing->player)
-	    EV_Teleport( line, side, thing, false );
+	    EV_Teleport( line, side, thing, false, false );
 	break;
 	
       case 128:
@@ -1081,6 +1083,7 @@ P_ShootSpecialLine
 ( mobj_t*	thing,
   line_t*	line )
 {
+    short	oldTag = line->tag;
     int		ok;
     
     //	Impacts that other things can activate.
@@ -1119,8 +1122,9 @@ P_ShootSpecialLine
 	break;
 
       case 142:
+      case 143:
 	// [sys] Run Action
-	RUNACTION_LINE(ACTTYPE_LINEDEF_SHOOT, 0x1000, -1);
+	ACTION_RUNLINE(ACTTYPE_LINEDEF_SHOOT, 0x1000, -1);
 	break;
     }
 }
@@ -1216,16 +1220,13 @@ void P_PlayerInSpecialSector (player_t* player)
 	if (action_run(
 		ACTTYPE_SECTOR,
 		&sector->action,
+		1,
 		NULL,
 		sector,
 		-1,
 		player->mo
 	)) {
 		fprintf(stderr, "Action: Failed to run\n");
-	}
-	
-	if (!sector->action.reuse) {
-		sector->special = 0;
 	}
 	break;
 			

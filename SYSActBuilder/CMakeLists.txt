@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.11)
 
-project(SYSAct LANGUAGES C CXX VERSION 1.0)
+project(SYSActBuilder LANGUAGES C CXX VERSION 1.0)
 
 if(WIN32)
 	set(BUILD_SHARED_LIBS OFF)

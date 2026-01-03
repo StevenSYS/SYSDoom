@@ -313,7 +313,11 @@ void P_PlayerThink (player_t* player)
 	player->mo->flags |= MF_NOCLIP;
     else
 	player->mo->flags &= ~MF_NOCLIP;
-    
+
+    if (player->mo->flags2 & MF2_FROZEN) {
+	return;
+    }
+
     // chain saw run forward
     cmd = &player->cmd;
     if (player->mo->flags & MF_JUSTATTACKED)
@@ -515,5 +519,3 @@ void P_PlayerThink (player_t* player)
     else
 	player->fixedcolormap = 0;
 }
-
-

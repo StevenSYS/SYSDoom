@@ -738,6 +738,7 @@ P_KillMobj
 	target->flags &= ~MF_NOGRAVITY;
 
     target->flags |= MF_CORPSE|MF_DROPOFF;
+    target->flags2 &= ~MF2_FROZEN;
     target->height >>= 2;
 
     if (source && source->player)
@@ -996,4 +997,3 @@ P_DamageMobj
     }
 			
 }
-

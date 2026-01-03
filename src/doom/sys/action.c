@@ -37,6 +37,7 @@
 static actionTypes_t types;
 
 static void regAct() {
+	ACTION_REGISTER(act_freeze);
 	ACTION_REGISTER(act_message);
 	ACTION_REGISTER(act_spawnThing);
 	ACTION_REGISTER(act_teleport);
@@ -68,7 +69,6 @@ int action_run(
 		action == NULL ||
 		action->name == NULL
 	) {
-		printf("%p\n", action->name);
 		return 1;
 	}
 	

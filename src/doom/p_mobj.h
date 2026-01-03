@@ -206,6 +206,11 @@ typedef enum
 
 } mobjflag_t;
 
+// [sys] Extra Flags
+typedef enum {
+	MF2_FROZEN	= 0b00000001,
+	MF2_BREAKABLE	= 0b00000010
+} mobjflag2_t;
 
 // Map Object definition.
 typedef struct mobj_s
@@ -256,6 +261,7 @@ typedef struct mobj_s
     int			tics;	// state tic counter
     state_t*		state;
     int			flags;
+    int flags2;			// [sys] Extra Flags
     int			health;
 
     // Movement direction, movement generation (zig-zagging).
@@ -296,7 +302,6 @@ typedef struct mobj_s
     fixed_t		oldy;
     fixed_t		oldz;
     angle_t		oldangle;
-
 } mobj_t;
 
 

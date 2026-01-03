@@ -167,7 +167,7 @@ void P_XYMovement (mobj_t* mo)
     player_t*	player;
     fixed_t	xmove;
     fixed_t	ymove;
-			
+
     if (!mo->momx && !mo->momy)
     {
 	if (mo->flags & MF_SKULLFLY)
@@ -214,6 +214,10 @@ void P_XYMovement (mobj_t* mo)
 		
 	if (!P_TryMove (mo, ptryx, ptryy))
 	{
+	    if ((mo->flags2 & MF2_FROZEN) && (mo->flags2 & MF2_BREAKABLE)) {
+		mo->flags2 &= ~(MF2_FROZEN | MF2_BREAKABLE);
+	    }
+
 	    // blocked move
 	    if (mo->player)
 	    {	// try to slide along it
@@ -255,8 +259,8 @@ void P_XYMovement (mobj_t* mo)
 	return;
     }
 
-    if (mo->flags & (MF_MISSILE | MF_SKULLFLY) )
-	return; 	// no friction for missiles ever
+    if (mo->flags & (MF_MISSILE | MF_SKULLFLY) || mo->flags2 & MF2_FROZEN)
+	return; 	// no friction for missiles or frozen objects ever
 		
   // [crispy] fix mid-air speed boost when using noclip cheat
   if (!player || !(player->mo->flags & MF_NOCLIP))
@@ -561,6 +565,7 @@ void P_MobjThinker (mobj_t* mobj)
     {
 	return MusInfoThinker(mobj);
     }
+
     // [crispy] suppress interpolation of player missiles for the first tic
     // and Archvile fire to mitigate it being spawned at the wrong location
     if (mobj->interp < 0)
@@ -603,7 +608,10 @@ void P_MobjThinker (mobj_t* mobj)
 	    return;		// mobj was removed
     }
 
-    
+    if (mobj->flags2 & MF2_FROZEN) {
+        return;
+    }
+
     // cycle through states,
     // calling action functions at transitions
     if (mobj->tics != -1)
@@ -667,6 +675,7 @@ P_SpawnMobjSafe
     mobj->radius = info->radius;
     mobj->height = info->height;
     mobj->flags = info->flags;
+    mobj->flags2 = 0;
     mobj->health = info->spawnhealth;
 
     if (gameskill != sk_nightmare)
@@ -1348,4 +1357,3 @@ P_SpawnPlayerMissile
 
     A_Recoil (source->player);
 }
-

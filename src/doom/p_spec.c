@@ -644,6 +644,8 @@ P_CrossSpecialLinePtr
 	  case 4:	// RAISE DOOR
 	  case 10:	// PLAT DOWN-WAIT-UP-STAY TRIGGER
 	  case 88:	// PLAT DOWN-WAIT-UP-STAY RETRIGGER
+	  case 142:	// [sys] Run Action Once
+	  case 143:	// [sys] Run Action Repeatable
 	    ok = 1;
 	    break;
 	}

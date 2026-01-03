@@ -589,8 +589,9 @@ P_TryMove
     line_t*	ld;
 
     floatok = false;
-    if (!P_CheckPosition (thing, x, y))
+    if (!P_CheckPosition (thing, x, y)) {
 	return false;		// solid wall or thing
+    }
     
     if ( !(thing->flags & MF_NOCLIP) )
     {

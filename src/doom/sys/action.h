@@ -21,7 +21,7 @@
 	_vName, \
 	_name \
 ) \
-	actionType_t _vName = { \
+	actionType_t act_ ## _vName = { \
 		_name, \
 		&run \
 	}

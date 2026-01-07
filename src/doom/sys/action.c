@@ -16,7 +16,7 @@
 
 #define ACTION_REGISTER(_vName) \
 	REGISTER( \
-		_vName, \
+		act_ ## _vName, \
 		types, \
 		actionType_t \
 	)
@@ -37,10 +37,10 @@
 static actionTypes_t types;
 
 static void regAct() {
-	ACTION_REGISTER(act_freeze);
-	ACTION_REGISTER(act_message);
-	ACTION_REGISTER(act_spawnThing);
-	ACTION_REGISTER(act_teleport);
+	ACTION_REGISTER(freeze);
+	ACTION_REGISTER(message);
+	ACTION_REGISTER(spawnThing);
+	ACTION_REGISTER(teleport);
 	return;
 }
 

@@ -34,4 +34,4 @@ ACTION_RUN {
 	return 0;
 }
 
-ACTION_TYPE(act_spawnThing, "spawnThing");
+ACTION_TYPE(spawnThing, "spawnThing");

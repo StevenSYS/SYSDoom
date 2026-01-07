@@ -25,4 +25,4 @@ ACTION_RUN {
 	return 0;
 }
 
-ACTION_TYPE(act_teleport, "teleport");
+ACTION_TYPE(teleport, "teleport");

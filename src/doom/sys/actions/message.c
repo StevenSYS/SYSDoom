@@ -27,4 +27,4 @@ ACTION_RUN {
 	return 0;
 }
 
-ACTION_TYPE(act_message, "message");
+ACTION_TYPE(message, "message");

@@ -24,4 +24,4 @@ ACTION_RUN {
 	return 0;
 }
 
-ACTION_TYPE(act_freeze, "freeze");
+ACTION_TYPE(freeze, "freeze");

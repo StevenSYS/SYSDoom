@@ -47,7 +47,7 @@ static inline int init(int argc) {
 	
 	if (!SDL_Init(SDL_INIT_VIDEO)) {
 		ERROR_MESSAGE(
-			LANG_PREFIX_SDL3 ":" LANG_ERROR_INIT,
+			LANG_PREFIX_SDL3 ": " LANG_ERROR_INIT,
 			SDL_GetError()
 		);
 		return 1;

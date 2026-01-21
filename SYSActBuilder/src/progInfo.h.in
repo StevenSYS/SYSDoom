@@ -28,8 +28,6 @@
 #define SIZE_GAMELIST 22
 
 /* - Length - */
-
-/* Misc. */
 #define LENGTH_BUFFER 255
 
 /* - Max FPS - */

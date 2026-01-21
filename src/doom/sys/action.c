@@ -14,16 +14,16 @@
 	} \
 	_var.count++;
 
-#define ACTION_REGISTER(_vName) \
+#define ACTION_REGISTER(_name) \
 	REGISTER( \
-		act_ ## _vName, \
+		act_ ## _name, \
 		types, \
 		actionType_t \
 	)
 
 #define TYPE_REGISTER(_func, _var, _type, _label) \
 	_label: \
-	_func(&_var); \
+	_func(); \
 	\
 	if ( \
 		_var.i == NULL && \

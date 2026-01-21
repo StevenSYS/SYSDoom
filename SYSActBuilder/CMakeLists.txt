@@ -41,7 +41,11 @@ include_directories(
 	"src/submodules"
 )
 
-configure_file(src/progInfo.h.in ${CMAKE_CURRENT_SOURCE_DIR}/src/progInfo.h @ONLY)
+configure_file(
+	${CMAKE_CURRENT_SOURCE_DIR}/src/progInfo.h.in
+	${CMAKE_CURRENT_SOURCE_DIR}/src/progInfo.h
+	@ONLY
+)
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 target_link_libraries(
